@@ -5,7 +5,7 @@ export default {
     // Common CORS headers for all responses
     const corsHeaders = {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', // Or 'https://url-tracker-app.pages.dev' for specific origin
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     };

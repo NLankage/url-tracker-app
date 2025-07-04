@@ -1,5 +1,4 @@
-// Base URL for backend API
-const BASE_URL = 'https://url-tracker-worker.nelakalankage.workers.dev/'; // Update to Worker URL for production
+const BASE_URL = 'https://url-tracker-worker.nelakalankage.workers.dev/';
 
 // Testing flag (true = 10 minutes, false = 100 days)
 const isTesting = false;
@@ -190,26 +189,3 @@ document.getElementById('showExpired').addEventListener('click', async function(
         document.getElementById('expiredTable').innerHTML = '<div class="alert alert-danger">Error fetching expired URLs!</div>';
     }
 });
-
-// Function to check and update active status periodically (for testing)
-async function checkExpiration() {
-    try {
-        const response = await fetch(`${BASE_URL}/get-data`);
-        const savedData = await response.json();
-        savedData.forEach(data => {
-            data.activeStatus = isExpired(data.expireDateTime) ? 0 : 1;
-        });
-        await fetch(`${BASE_URL}/update-active-status`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(savedData)
-        });
-    } catch (error) {
-        console.error('Error checking expiration:', error);
-    }
-}
-
-// For testing: Check expiration every minute
-if (isTesting) {
-    setInterval(checkExpiration, 60 * 1000); // Runs every minute
-}
