@@ -12,7 +12,9 @@
 		"enabled": true
 	},
 	"vars": {
-    	"MONGODB_URI": "mongodb+srv://nelakalankage:PLl4Dwu3gTM31FBV@cluster0.nght3tq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    	"MONGODB_URI": "mongodb+srv://nelakalankage:PLl4Dwu3gTM31FBV@cluster0.nght3tq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+		"TELEGRAM_BOT_TOKEN": "8106024915:AAGAvTLHBZWbwe2KLrnSNnOM7dz49AWyFLU",
+    	"TELEGRAM_CHAT_ID": "5646347039"
   	},
 	"triggers": {
 		"crons": ["*/1 * * * *"]
