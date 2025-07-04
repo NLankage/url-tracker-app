@@ -127,4 +127,29 @@ export default {
       await client.close();
     }
   },
+
+  // Scheduled task for checking expiration
+  async scheduled(event, env, ctx) {
+    const client = new MongoClient(env.MONGODB_URI);
+    try {
+      await client.connect();
+      const db = client.db('urlTrackerDB');
+      const urlsCollection = db.collection('urls');
+
+      const savedData = await urlsCollection.find().toArray();
+      for (const data of savedData) {
+        const now = new Date();
+        const expire = new Date(data.expireDateTime);
+        const activeStatus = now >= expire ? 0 : 1;
+        await urlsCollection.updateOne(
+          { id: data.id },
+          { $set: { activeStatus } }
+        );
+      }
+    } catch (error) {
+      console.error('Error in scheduled task:', error);
+    } finally {
+      await client.close();
+    }
+  },
 };
