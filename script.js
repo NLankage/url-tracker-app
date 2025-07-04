@@ -1,7 +1,7 @@
 const BASE_URL = 'https://url-tracker-worker.nelakalankage.workers.dev';
 
 // Testing flag (true = 10 minutes, false = 100 days)
-const isTesting = true;
+const isTesting = false;
 
 // Function to extract URL from iframe embed code
 function extractUrl(embedCode) {
