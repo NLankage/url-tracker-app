@@ -144,7 +144,7 @@ export default {
 
         if (data.activeStatus !== newActiveStatus && newActiveStatus === 0) {
           // URL just expired, send Telegram message
-          const message = `මචන් URL එකක් දින 100 පැනලා Inactive වෙන්න යන්නෙ.\n\nID: ${data.id}\nURL: ${data.url}\nActiveStatus: ${newActiveStatus}`;
+          const message = `මචන් URL එකක් දින 100 පැනලා Inactive වෙන්න යන්නෙ.\n\nDate: ${data.expireDateTime}\nID: ${data.id}\nURL: ${data.url}\nActiveStatus: ${newActiveStatus}`;
           const response = await fetch(
             `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
             {
