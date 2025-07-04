@@ -1,4 +1,4 @@
-const BASE_URL = 'https://url-tracker-worker.nelakalankage.workers.dev/';
+const BASE_URL = 'https://url-tracker-worker.nelakalankage.workers.dev';
 
 // Testing flag (true = 10 minutes, false = 100 days)
 const isTesting = false;
