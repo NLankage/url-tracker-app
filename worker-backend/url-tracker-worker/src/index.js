@@ -128,7 +128,7 @@ export default {
     }
   },
 
-  // Scheduled task for checking expiration
+  // Scheduled task for checking expiration and sending Telegram messages
   async scheduled(event, env, ctx) {
     const client = new MongoClient(env.MONGODB_URI);
     try {
@@ -140,10 +140,34 @@ export default {
       for (const data of savedData) {
         const now = new Date();
         const expire = new Date(data.expireDateTime);
-        const activeStatus = now >= expire ? 0 : 1;
+        const newActiveStatus = now >= expire ? 0 : 1;
+
+        if (data.activeStatus !== newActiveStatus && newActiveStatus === 0) {
+          // URL just expired, send Telegram message
+          const message = `මචන් URL එකක් දින 100 පැනලා Inactive වෙන්න යන්නෙ.\n\nID: ${data.id}\nURL: ${data.url}\nActiveStatus: ${newActiveStatus}`;
+          const response = await fetch(
+            `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                chat_id: env.TELEGRAM_CHAT_ID,
+                text: message
+              })
+            }
+          );
+
+          if (!response.ok) {
+            console.error('Failed to send Telegram message:', await response.text());
+          }
+        }
+
+        // Update activeStatus in MongoDB
         await urlsCollection.updateOne(
           { id: data.id },
-          { $set: { activeStatus } }
+          { $set: { activeStatus: newActiveStatus } }
         );
       }
     } catch (error) {
