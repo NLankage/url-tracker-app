@@ -13,7 +13,10 @@
 	},
 	"vars": {
     	"MONGODB_URI": "mongodb+srv://nelakalankage:PLl4Dwu3gTM31FBV@cluster0.nght3tq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  	}
+  	},
+	"triggers": {
+		"crons": ["*/1 * * * *"]
+	}
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
