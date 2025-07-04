@@ -17,7 +17,7 @@
     	"TELEGRAM_CHAT_ID": "5646347039"
   	},
 	"triggers": {
-		"crons": ["*/1 * * * *"]
+		"crons": ["0 0 * * *"]
 	}
 	/**
 	 * Smart Placement
