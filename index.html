@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Expiry Tracker</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>URL Expiry Tracker</h1>
+        <form id="urlForm">
+            <div class="mb-3">
+                <label for="embedCode" class="form-label">Iframe Embed Code</label>
+                <textarea class="form-control" id="embedCode" rows="4" placeholder="Paste your iframe embed code here"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <div id="result" class="mt-3"></div>
+        </form>
+        <div class="mt-3">
+            <button type="button" id="showExpired" class="btn btn-secondary">Show Expired URLs</button>
+        </div>
+        <div id="expiredTable" class="mt-3"></div>
+    </div>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
