@@ -1,40 +1,33 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
-
 import { MongoClient } from 'mongodb';
 
 export default {
   async fetch(request, env) {
+    // Common CORS headers for all responses
+    const corsHeaders = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', // Or 'https://url-tracker-app.pages.dev' for specific origin
+      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
     const url = new URL(request.url);
     const client = new MongoClient(env.MONGODB_URI);
 
     try {
+      // Handle CORS preflight (OPTIONS) requests
+      if (request.method === 'OPTIONS') {
+        return new Response(null, { headers: corsHeaders });
+      }
+
+      // Connect to MongoDB
       await client.connect();
       const db = client.db('urlTrackerDB');
       const urlsCollection = db.collection('urls');
 
       // Root path response
       if (url.pathname === '/' && request.method === 'GET') {
-        return new Response('URL Tracker Worker is running!', {
-          headers: { 'Content-Type': 'text/plain' },
-        });
-      }
-
-      // Handle CORS preflight
-      if (request.method === 'OPTIONS') {
-        return new Response(null, {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-          },
+        return new Response(JSON.stringify({ message: 'URL Tracker Worker is running!' }), {
+          headers: corsHeaders,
         });
       }
 
@@ -45,7 +38,7 @@ export default {
         const existingEntry = await urlsCollection.findOne({ url: newData.url });
         if (existingEntry) {
           return new Response(JSON.stringify({ message: 'URL exists', id: existingEntry.id }), {
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+            headers: corsHeaders,
           });
         }
 
@@ -59,7 +52,7 @@ export default {
 
         await urlsCollection.insertOne(newData);
         return new Response(JSON.stringify({ message: 'Data saved successfully', id: newId }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          headers: corsHeaders,
         });
       }
 
@@ -74,12 +67,12 @@ export default {
         );
         if (result.matchedCount > 0) {
           return new Response(JSON.stringify({ message: 'Data updated successfully' }), {
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+            headers: corsHeaders,
           });
         }
         return new Response(JSON.stringify({ message: 'Data not found' }), {
           status: 404,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          headers: corsHeaders,
         });
       }
 
@@ -89,12 +82,12 @@ export default {
         const result = await urlsCollection.deleteOne({ id: id });
         if (result.deletedCount > 0) {
           return new Response(JSON.stringify({ message: 'Data deleted successfully' }), {
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+            headers: corsHeaders,
           });
         }
         return new Response(JSON.stringify({ message: 'Data not found' }), {
           status: 404,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          headers: corsHeaders,
         });
       }
 
@@ -102,7 +95,7 @@ export default {
       if (url.pathname === '/get-data' && request.method === 'GET') {
         const savedData = await urlsCollection.find().toArray();
         return new Response(JSON.stringify(savedData), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          headers: corsHeaders,
         });
       }
 
@@ -116,15 +109,19 @@ export default {
           );
         }
         return new Response(JSON.stringify({ message: 'Active status updated' }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          headers: corsHeaders,
         });
       }
 
-      return new Response('Not found', { status: 404 });
+      // Handle unknown routes
+      return new Response(JSON.stringify({ message: 'Not found' }), {
+        status: 404,
+        headers: corsHeaders,
+      });
     } catch (error) {
       return new Response(JSON.stringify({ message: 'Server error', error: error.message }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        headers: corsHeaders,
       });
     } finally {
       await client.close();
